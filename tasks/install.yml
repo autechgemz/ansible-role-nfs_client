@@ -1,0 +1,21 @@
+---
+
+- name: Install tasks
+  become: true
+  tags:
+   - nfs_client_install
+   - nfs_client
+  block:
+
+    - name: Install packages
+      when: ansible_os_family == 'Debian'
+      ansible.builtin.apt:
+        name: "{{ nfs_client_package_name }}"
+        state: "{{ nfs_client_package_ensure }}"
+        update_cache: true
+
+    - name: Install packages
+      when: ansible_os_family == 'RedHat'
+      ansible.builtin.yum:
+        name: "{{ nfs_client_package_name }}"
+        state: "{{ nfs_client_package_ensure }}"

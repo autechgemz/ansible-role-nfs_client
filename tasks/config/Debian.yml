@@ -1,0 +1,79 @@
+---
+
+- name: Config tasks
+  become: true
+  tags:
+    - nfs_client_config
+    - nfs_client
+  block:
+
+    - name: Merge daemon configration
+      ansible.builtin.set_fact:
+        nfs_client_daemon_config_options_merged: "{{ nfs_client_daemon_config_options_default | ansible.builtin.combine(nfs_client_daemon_config_options, recursive=True) }}"
+
+    - name: Merge global configration
+      ansible.builtin.set_fact:
+        nfs_client_config_options_merged: "{{ nfs_client_config_options_default | ansible.builtin.combine(nfs_client_config_options, recursive=True) }}"
+
+    - name: Merge dropin configration
+      ansible.builtin.set_fact:
+        nfs_client_dropin_config_options_merged: "{{ nfs_client_dropin_config_options_default | ansible.builtin.combine(nfs_client_dropin_config_options, recursive=True) }}"
+
+    - name: Generate daemon configuration
+      when: nfs_client_daemon_config_options_merged is defined and nfs_client_daemon_config_options_merged
+      ansible.builtin.template:
+        src: daemon.j2
+        dest: "{{ nfs_client_daemon_config_file }}"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart service
+
+    - name: Generate global configuration
+      when: nfs_client_config_options_merged is defined and nfs_client_config_options_merged
+      ansible.builtin.template:
+        src: nfs.conf.j2
+        dest: "{{ nfs_client_config_file }}"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart service
+
+    - name: Generate dropin config directory
+      when: nfs_client_dropin_config_options_merged is defined and nfs_client_dropin_config_options_merged
+      ansible.builtin.file:
+        path: "{{ nfs_client_dropin_config_dir }}"
+        owner: root
+        group: root
+        mode: "0755"
+        state: directory
+
+    - name: Initialize dropin config directory
+      when:
+        - nfs_client_dropin_config_purge is defined and nfs_client_dropin_config_purge
+        - nfs_client_dropin_config_options_merged is defined and nfs_client_dropin_config_options_merged
+      block:
+
+        - name: Listing dropin config
+          ansible.builtin.find:
+            paths: "{{ nfs_client_dropin_config_dir }}"
+            patterns: "*.conf"
+          register: dropin_list
+
+        - name: Removing dropin config
+          ansible.builtin.file:
+            path: "{{ item.path }}"
+            state: absent
+          with_items: "{{ dropin_list.files }}"
+          notify: Restart service
+
+    - name: Generate dropin configuration
+      when: nfs_client_dropin_config_options_merged is defined and nfs_client_dropin_config_options_merged
+      ansible.builtin.template:
+        src: nfs.conf.dropin.j2
+        dest: "{{ nfs_client_dropin_config_dir }}/{{ item.name }}"
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart service
+      with_items: "{{ nfs_client_dropin_config_options }}"

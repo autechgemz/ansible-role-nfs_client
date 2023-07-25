@@ -1,0 +1,33 @@
+---
+
+nfs_client_package_name: [ "nfs-utils", "rpcbind" ]
+
+nfs_client_service_name: 'rpcbind'
+
+nfs_client_daemon_config_file: ''
+
+nfs_client_config_file: ''
+
+nfs_client_dropin_config_dir: ''
+
+nfs_client_daemon_config_options_default: {}
+
+nfs_client_config_options_default:
+  general: {}
+  nfsrahead: {}
+  exports: {}
+  exportfs: {}
+  gssd:
+    use-gss-proxy: '1'
+  lockd: {}
+  exportd: {}
+  mountd: {}
+  nfsdcld: {}
+  nfsdcltrack: {}
+  nfsd:
+    rdma: 'y'
+    rdma-port: '20049'
+  statd: {}
+  sm-notify: {}
+
+nfs_client_dropin_config_options_default: {}

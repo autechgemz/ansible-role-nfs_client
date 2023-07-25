@@ -1,0 +1,17 @@
+---
+
+nfs_client_package_ensure: 'present'
+
+nfs_client_service_ensure: 'started'
+
+nfs_client_service_enable: true
+
+nfs_client_mounts: []
+
+nfs_client_daemon_config_options: {}
+
+nfs_client_config_options: {}
+
+nfs_client_dropin_config_purge: false
+
+nfs_client_dropin_config_options: {}

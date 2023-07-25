@@ -1,0 +1,8 @@
+---
+
+- name: Restart rpcbind service
+  ansible.builtin.service:
+    name: rpcbind
+    state: started
+  when: not ansible_check_mode
+  listen: Restart service

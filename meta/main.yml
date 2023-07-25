@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  role_name: nfs_client
+  namespace: autechgemz
+  author: "autechgemz@gmail.com"
+  description: Manage NFS client configrations.
+  license: MIT
+  min_ansible_version: '2.0'
+  platforms:
+    - name: EL
+      release:
+        - 7
+        - 8
+        - 9
+    - name: Ubuntu
+      release:
+        - bionic
+        - focal
+        - jammy
+  galaxy_tags:
+    - nfs
+dependencies: []

@@ -1,0 +1,35 @@
+---
+
+nfs_client_package_name: [ "nfs-common" ]
+
+nfs_client_service_name: 'rpcbind'
+
+nfs_client_daemon_config_file: '/etc/default/nfs-common'
+
+nfs_client_config_file: '/etc/nfs.conf'
+
+nfs_client_dropin_config_dir: '/etc/nfs/nfs.conf.d'
+
+nfs_client_daemon_config_options_default:
+  NEED_STATD: ''
+  STATDOPTS: ''
+  NEED_IDMAPD: ''
+  NEED_GSSD: ''
+
+nfs_client_config_options_default:
+  general:
+    pipefs-directory: '/run/rpc_pipefs'
+  exports: {}
+  exportfs: {}
+  gssd: {}
+  lockd: {}
+  mountd:
+    manage-gids: 'y'
+  nfsdcld: {}
+  nfsdcltrack: {}
+  nfsd: {}
+  statd: {}
+  sm-notify: {}
+  svcgssd: {}
+
+nfs_client_dropin_config_options_default: {}

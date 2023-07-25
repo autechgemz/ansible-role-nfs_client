@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+{% if nfs_client_config_options_merged is defined and nfs_client_config_options_merged %}
+{% for key, value in nfs_client_config_options_merged.items() %}
+[{{ key }}]
+{% if value %}
+{% for k, v in value.items() %}
+{{ k }}={{ v }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}

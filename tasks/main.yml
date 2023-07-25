@@ -1,0 +1,33 @@
+---
+
+- name: Manage nfs_client
+  tags:
+    - nfs_client_install
+    - nfs_client_config
+    - nfs_client_service
+    - nfs_client_mounts
+  block:
+    - name: Set dependency variables
+      ansible.builtin.include_vars: "{{ item }}"
+      loop:
+        - "{{ ansible_os_family }}.yml"
+
+    - name: Install tasks
+      ansible.builtin.import_tasks: install.yml
+
+    - name: Config tasks
+      when:
+        - ansible_os_family == 'Debian'
+      ansible.builtin.include_tasks: "config/Debian.yml"
+
+    - name: Service tasks
+      ansible.builtin.import_tasks: service.yml
+
+    - name: Mount tasks
+      ansible.builtin.import_tasks: mounts.yml
+
+  rescue:
+    - name: Print Error
+      ansible.builtin.debug:
+        msg: "Unsupport platform or error occurred due to some reason."
+      failed_when: true

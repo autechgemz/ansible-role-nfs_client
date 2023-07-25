@@ -1,0 +1,22 @@
+---
+
+- name: Mounts tasks
+  become: true
+  tags:
+    - nfs_client_mounts
+    - nfs_client
+  block:
+    - name: Debug nfs mounts
+      when: nfs_client_debug is defined and nfs_client_debug
+      ansible.builtin.debug:
+        var: nfs_client_mounts
+
+    - name: Manage nfs mounts
+      when: nfs_client_mounts is defined and nfs_client_mounts
+      ansible.posix.mount:
+        path: "{{ item.path }}"
+        src: "{{ item.server }}:{{ item.device }}"
+        fstype: "{{ item.fstype | default('nfs') }}"
+        opts: "{{ item.options | default('defaults') }}"
+        state: "{{ item.state | default('mounted') }}"
+      with_items: "{{ nfs_client_mounts }}"
